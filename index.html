@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VerdeVida</title>
+  <style>
+    :root{
+      --bg:#d8ebe4;
+      --bg-soft:#eaf5f0;
+      --text:#24322d;
+      --muted:#5f726b;
+      --white:#f8fbf9;
+
+      --mint:#bfe3d7;
+      --mint-2:#cfe7d9;
+      --blue:#bfd8f4;
+      --lavender:#c9cbe5;
+      --pink:#efbfd0;
+      --yellow:#f2c14e;
+      --green:#5f9567;
+      --teal:#55d4b7;
+      --dark:#1b2332;
+
+      --radius-xl:40px;
+      --radius-lg:30px;
+      --radius-md:24px;
+      --shadow:0 14px 32px rgba(40,70,60,.08);
+      --shadow-soft:0 8px 18px rgba(40,70,60,.05);
+      --nav-h:84px;
+    }
+
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body{
+      background:var(--bg);
+      color:var(--text);
+      min-height:100vh;
+    }
+
+    .app{
+      max-width:430px;
+      margin:0 auto;
+      min-height:100vh;
+      padding:22px 18px 120px;
+      position:relative;
+    }
+
+    .screen{
+      display:none;
+      animation:fade .28s ease;
+    }
+
+    .screen.active{
+      display:block;
+    }
+
+    @keyframes fade{
+      from{opacity:0; transform:translateY(8px);}
+      to{opacity:1; transform:translateY(0);}
+    }
+
+    .topbar{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:26px;
+    }
+
+    .eyebrow{
+      font-size:12px;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:#6e837c;
+      margin-bottom:10px;
+      font-weight:700;
+    }
+
+    .title{
+      font-size:2rem;
+      line-height:1.02;
+      font-weight:800;
+      margin-bottom:10px;
+      max-width:260px;
+    }
+
+    .subtitle{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.5;
+      max-width:285px;
+    }
+
+    .avatar{
+      width:54px;
+      height:54px;
+      border-radius:20px;
+      background:rgba(255,255,255,.5);
+      display:grid;
+      place-items:center;
+      box-shadow:var(--shadow-soft);
+      flex-shrink:0;
+      font-size:24px;
+    }
+
+    .card{
+      box-shadow:var(--shadow);
+    }
+
+    .hero-card{
+      background:var(--mint);
+      border-radius:var(--radius-xl);
+      padding:20px;
+      margin-bottom:18px;
+      overflow:hidden;
+      position:relative;
+    }
+
+    .hero-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:14px;
+    }
+
+    .d-day{
+      font-size:2.1rem;
+      font-weight:800;
+      letter-spacing:-.03em;
+    }
+
+    .badge{
+      background:rgba(255,255,255,.62);
+      border-radius:999px;
+      padding:8px 12px;
+      font-size:12px;
+      font-weight:700;
+      color:#2e4b42;
+      white-space:nowrap;
+    }
+
+    .hero-title{
+      font-size:1.55rem;
+      line-height:1.08;
+      font-weight:800;
+      max-width:240px;
+      margin-bottom:18px;
+    }
+
+    .hero-plant{
+      position:relative;
+      height:245px;
+      margin-bottom:18px;
+    }
+
+    .hero-plant::before{
+      content:"";
+      position:absolute;
+      left:50%;
+      bottom:16px;
+      transform:translateX(-50%);
+      width:160px;
+      height:26px;
+      background:rgba(0,0,0,.06);
+      filter:blur(10px);
+      border-radius:999px;
+    }
+
+    .flower-center{
+      position:absolute;
+      left:50%;
+      top:34px;
+      transform:translateX(-50%);
+      width:80px;
+      height:80px;
+      background:var(--yellow);
+      border-radius:50%;
+      box-shadow:0 0 0 10px rgba(255,255,255,.16);
+    }
+
+    .stem{
+      position:absolute;
+      left:50%;
+      top:100px;
+      transform:translateX(-50%);
+      width:4px;
+      height:90px;
+      background:#507f58;
+      border-radius:999px;
+    }
+
+    .leaf{
+      position:absolute;
+      bottom:72px;
+      width:96px;
+      height:42px;
+      background:var(--green);
+      border-radius:90px 90px 0 90px;
+    }
+
+    .leaf.l1{ left:84px; transform:rotate(-18deg); }
+    .leaf.l2{ left:104px; bottom:58px; transform:rotate(18deg); width:82px; height:34px; background:#6ca071; }
+    .leaf.r1{ right:84px; transform:scaleX(-1) rotate(-18deg); }
+    .leaf.r2{ right:104px; bottom:58px; transform:scaleX(-1) rotate(18deg); width:82px; height:34px; background:#6ca071; }
+
+    .pot{
+      position:absolute;
+      left:50%;
+      bottom:24px;
+      transform:translateX(-50%);
+      width:120px;
+      height:76px;
+      background:#f4f3ee;
+      border-radius:18px 18px 30px 30px;
+    }
+
+    .hero-bottom{
+      display:flex;
+      gap:16px;
+      align-items:flex-end;
+    }
+
+    .moisture{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:8px;
+      min-width:42px;
+    }
+
+    .bar{
+      width:12px;
+      height:92px;
+      border-radius:999px;
+      background:rgba(255,255,255,.55);
+      padding:4px;
+      display:flex;
+      align-items:flex-end;
+    }
+
+    .bar span{
+      width:100%;
+      height:68%;
+      border-radius:999px;
+      background:var(--teal);
+      display:block;
+    }
+
+    .moisture small{
+      font-size:11px;
+      color:#4f665f;
+      font-weight:700;
+    }
+
+    .tags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      flex:1;
+    }
+
+    .tag{
+      background:rgba(255,255,255,.58);
+      padding:10px 14px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:700;
+      color:#375148;
+    }
+
+    .mini-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      margin-bottom:18px;
+    }
+
+    .mini-card{
+      min-height:190px;
+      border-radius:var(--radius-lg);
+      padding:18px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .mini-day{
+      font-size:1.9rem;
+      font-weight:800;
+      letter-spacing:-.03em;
+    }
+
+    .mini-title{
+      font-size:1.05rem;
+      font-weight:700;
+      line-height:1.15;
+      max-width:120px;
+    }
+
+    .mini-plant{
+      align-self:center;
+      font-size:3.1rem;
+      line-height:1;
+      filter:drop-shadow(0 8px 10px rgba(0,0,0,.07));
+    }
+
+    .mini-card.blue{ background:var(--blue); }
+    .mini-card.lavender{ background:var(--lavender); }
+    .mini-card.pink{ background:var(--pink); }
+    .mini-card.mint{ background:var(--mint-2); }
+
+    .section-label{
+      font-size:13px;
+      text-transform:uppercase;
+      letter-spacing:.11em;
+      color:#6e837c;
+      font-weight:700;
+      margin:2px 4px 14px;
+    }
+
+    .quick-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .action-btn{
+      border:none;
+      background:rgba(255,255,255,.62);
+      border-radius:26px;
+      padding:18px 14px;
+      text-align:left;
+      box-shadow:var(--shadow-soft);
+      cursor:pointer;
+      color:#31433d;
+    }
+
+    .action-btn strong{
+      display:block;
+      font-size:15px;
+      margin-bottom:4px;
+    }
+
+    .action-btn span{
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.35;
+    }
+
+    .screen-header{
+      margin-bottom:18px;
+    }
+
+    .screen-header h2{
+      font-size:1.8rem;
+      line-height:1.05;
+      font-weight:800;
+      margin-bottom:8px;
+    }
+
+    .screen-header p{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.5;
+      max-width:300px;
+    }
+
+    .search{
+      width:100%;
+      border:none;
+      outline:none;
+      background:rgba(255,255,255,.65);
+      box-shadow:var(--shadow-soft);
+      border-radius:999px;
+      padding:16px 18px;
+      margin-bottom:14px;
+      font-size:15px;
+      color:var(--text);
+    }
+
+    .chips{
+      display:flex;
+      gap:10px;
+      overflow:auto;
+      padding-bottom:4px;
+      margin-bottom:16px;
+      scrollbar-width:none;
+    }
+
+    .chips::-webkit-scrollbar{ display:none; }
+
+    .chip{
+      white-space:nowrap;
+      border:none;
+      background:rgba(255,255,255,.68);
+      border-radius:999px;
+      padding:10px 14px;
+      font-size:13px;
+      font-weight:700;
+      color:#486057;
+      box-shadow:var(--shadow-soft);
+      cursor:pointer;
+    }
+
+    .chip.active{
+      background:#ffffff;
+      color:#25443a;
+    }
+
+    .library-list{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .library-card{
+      border-radius:32px;
+      padding:18px;
+      background:rgba(255,255,255,.62);
+    }
+
+    .library-head{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:12px;
+    }
+
+    .lib-icon{
+      width:54px;
+      height:54px;
+      border-radius:20px;
+      display:grid;
+      place-items:center;
+      flex-shrink:0;
+      font-size:24px;
+    }
+
+    .library-card h3{
+      font-size:1rem;
+      margin-bottom:4px;
+    }
+
+    .library-card small{
+      display:block;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .library-card p{
+      font-size:14px;
+      color:#4d625b;
+      line-height:1.5;
+      margin-bottom:12px;
+    }
+
+    .mini-tags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .mini-tag{
+      border-radius:999px;
+      background:#ffffff;
+      padding:8px 12px;
+      font-size:12px;
+      font-weight:700;
+      color:#53675f;
+    }
+
+    .moon-card{
+      background:#1b2332;
+      color:white;
+      border-radius:var(--radius-xl);
+      padding:20px;
+      margin-bottom:16px;
+      position:relative;
+      overflow:hidden;
+      box-shadow:0 18px 45px rgba(15,23,42,.20);
+    }
+
+    .moon-card::after{
+      content:"";
+      position:absolute;
+      top:-30px;
+      right:-10px;
+      width:130px;
+      height:130px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(255,214,122,.32), transparent 70%);
+    }
+
+    .moon-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+      margin-bottom:16px;
+      position:relative;
+      z-index:1;
+    }
+
+    .moon-disc{
+      width:86px;
+      height:86px;
+      border-radius:50%;
+      background:radial-gradient(circle at 35% 35%, #fff7cd, #e2b65d 62%, #91641a);
+      box-shadow:0 0 28px rgba(255,209,120,.35);
+      flex-shrink:0;
+    }
+
+    .moon-top h3{
+      font-size:1.3rem;
+      margin-bottom:6px;
+    }
+
+    .moon-top p{
+      color:#cad3df;
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .tips{
+      display:grid;
+      gap:10px;
+      position:relative;
+      z-index:1;
+    }
+
+    .tip{
+      background:rgba(255,255,255,.08);
+      border-radius:22px;
+      padding:12px 14px;
+      color:#e8edf5;
+      font-size:14px;
+      line-height:1.4;
+    }
+
+    .phase-list{
+      display:grid;
+      gap:12px;
+    }
+
+    .phase-item{
+      background:rgba(255,255,255,.6);
+      border-radius:28px;
+      padding:16px;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .phase-item h4{
+      margin-bottom:6px;
+      font-size:15px;
+    }
+
+    .phase-item p{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .settings-list{
+      display:grid;
+      gap:14px;
+    }
+
+    .setting-card{
+      background:rgba(255,255,255,.62);
+      border-radius:32px;
+      padding:18px;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .setting-row{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+    }
+
+    .setting-card h3{
+      font-size:1rem;
+      margin-bottom:6px;
+    }
+
+    .setting-card p{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .switch{
+      width:58px;
+      height:32px;
+      border-radius:999px;
+      background:#d6dfda;
+      position:relative;
+      flex-shrink:0;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+
+    .switch::after{
+      content:"";
+      width:24px;
+      height:24px;
+      border-radius:50%;
+      background:white;
+      position:absolute;
+      top:4px;
+      left:4px;
+      transition:.2s ease;
+      box-shadow:0 4px 10px rgba(0,0,0,.08);
+    }
+
+    .switch.active{
+      background:#9edcc8;
+    }
+
+    .switch.active::after{
+      left:30px;
+    }
+
+    .palette{
+      display:flex;
+      gap:10px;
+      margin-top:12px;
+    }
+
+    .swatch{
+      width:28px;
+      height:28px;
+      border-radius:50%;
+      box-shadow:var(--shadow-soft);
+    }
+
+    /* CAMERA */
+    .camera-card{
+      background:rgba(255,255,255,.62);
+      border-radius:32px;
+      padding:18px;
+      box-shadow:var(--shadow);
+      margin-bottom:16px;
+    }
+
+    .camera-preview-wrap{
+      background:#eef6f2;
+      border-radius:28px;
+      overflow:hidden;
+      margin-bottom:14px;
+      position:relative;
+      min-height:260px;
+      display:grid;
+      place-items:center;
+    }
+
+    video, canvas, .preview-image{
+      width:100%;
+      display:block;
+      border-radius:28px;
+      object-fit:cover;
+      max-height:380px;
+      background:#dfece6;
+    }
+
+    .camera-placeholder{
+      padding:28px;
+      text-align:center;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.5;
+    }
+
+    .camera-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-bottom:10px;
+    }
+
+    .full-btn{
+      width:100%;
+      border:none;
+      border-radius:22px;
+      padding:14px;
+      font-weight:800;
+      cursor:pointer;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .btn-main{
+      background:var(--mint);
+      color:#21463a;
+    }
+
+    .btn-light{
+      background:white;
+      color:#395148;
+    }
+
+    .btn-dark{
+      background:var(--dark);
+      color:white;
+    }
+
+    .file-input{
+      display:none;
+    }
+
+    .upload-label{
+      display:block;
+      text-align:center;
+      margin-top:10px;
+    }
+
+    .scan-status{
+      margin-top:12px;
+      padding:12px 14px;
+      border-radius:18px;
+      background:#eef8f3;
+      color:#345046;
+      font-size:14px;
+      line-height:1.4;
+    }
+
+    .result-card{
+      background:linear-gradient(180deg, #f8fbf9, #eef6f2);
+      border-radius:32px;
+      padding:18px;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .result-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+    }
+
+    .confidence{
+      background:#ffffff;
+      border-radius:999px;
+      padding:8px 12px;
+      font-size:12px;
+      font-weight:800;
+      color:#375148;
+    }
+
+    .result-name{
+      font-size:1.25rem;
+      font-weight:800;
+      margin-bottom:6px;
+    }
+
+    .result-scientific{
+      color:var(--muted);
+      font-style:italic;
+      margin-bottom:14px;
+      font-size:14px;
+    }
+
+    .result-grid{
+      display:grid;
+      gap:10px;
+    }
+
+    .result-item{
+      background:white;
+      border-radius:20px;
+      padding:12px 14px;
+    }
+
+    .result-item strong{
+      display:block;
+      margin-bottom:4px;
+      font-size:13px;
+    }
+
+    .result-item span{
+      color:#4d625b;
+      font-size:14px;
+      line-height:1.4;
+    }
+
+    .nav{
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform:translateX(-50%);
+      width:min(394px, calc(100% - 22px));
+      height:var(--nav-h);
+      background:rgba(255,255,255,.55);
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+      border-radius:999px;
+      box-shadow:var(--shadow);
+      display:flex;
+      align-items:center;
+      justify-content:space-around;
+      padding:10px;
+      z-index:20;
+    }
+
+    .nav-btn{
+      border:none;
+      background:none;
+      cursor:pointer;
+      min-width:56px;
+      color:#5a6d65;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:4px;
+      font-size:11px;
+      font-weight:700;
+    }
+
+    .nav-btn .icon{
+      font-size:20px;
+      line-height:1;
+    }
+
+    .nav-btn.active{
+      color:#21483d;
+    }
+
+    @media (max-width:380px){
+      .mini-grid,
+      .quick-actions,
+      .camera-actions{
+        grid-template-columns:1fr;
+      }
+
+      .title{
+        font-size:1.7rem;
+      }
+
+      .hero-title{
+        font-size:1.3rem;
+      }
+
+      .moon-top{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- HOME -->
+    <section class="screen active" id="home">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">VerdeVida</div>
+          <h1 class="title">Mis plantas en casa</h1>
+          <p class="subtitle">
+            Reúne tus plantas, su cuidado y tus recordatorios en un dashboard visual y suave.
+          </p>
+        </div>
+        <div class="avatar">🌿</div>
+      </header>
+
+      <section class="hero-card card">
+        <div class="hero-top">
+          <div class="d-day">D-10</div>
+          <div class="badge">Riego</div>
+        </div>
+
+        <h2 class="hero-title">Caléndula esperando su próximo cuidado</h2>
+
+        <div class="hero-plant">
+          <div class="flower-center"></div>
+          <div class="stem"></div>
+          <div class="leaf l1"></div>
+          <div class="leaf l2"></div>
+          <div class="leaf r1"></div>
+          <div class="leaf r2"></div>
+          <div class="pot"></div>
+        </div>
+
+        <div class="hero-bottom">
+          <div class="moisture">
+            <div class="bar"><span></span></div>
+            <small>60%</small>
+          </div>
+          <div class="tags">
+            <span class="tag">☀️ Luz media</span>
+            <span class="tag">💧 En 10 días</span>
+            <span class="tag">🌱 Interior</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="mini-grid">
+        <article class="mini-card blue card">
+          <div class="mini-day">D-6</div>
+          <h3 class="mini-title">Arándano</h3>
+          <div class="mini-plant">🫐</div>
+        </article>
+        <article class="mini-card lavender card">
+          <div class="mini-day">D-4</div>
+          <h3 class="mini-title">Lavanda</h3>
+          <div class="mini-plant">🪻</div>
+        </article>
+        <article class="mini-card pink card">
+          <div class="mini-day">D-3</div>
+          <h3 class="mini-title">Romero</h3>
+          <div class="mini-plant">🌸</div>
+        </article>
+        <article class="mini-card mint card">
+          <div class="mini-day">D-1</div>
+          <h3 class="mini-title">Aloe Vera</h3>
+          <div class="mini-plant">🌿</div>
+        </article>
+      </section>
+
+      <div class="section-label">Accesos rápidos</div>
+      <section class="quick-actions">
+        <button class="action-btn" onclick="goToScreen('camera')">
+          <strong>📷 Cámara</strong>
+          <span>Haz una foto e intenta identificar una planta.</span>
+        </button>
+        <button class="action-btn" onclick="goToScreen('library')">
+          <strong>🍵 Medicinal</strong>
+          <span>Accede a la biblioteca de plantas y remedios.</span>
+        </button>
+        <button class="action-btn" onclick="goToScreen('lunar')">
+          <strong>🌙 Lunar</strong>
+          <span>Revisa consejos según la fase lunar actual.</span>
+        </button>
+        <button class="action-btn">
+          <strong>🔔 Avisos</strong>
+          <span>Organiza recordatorios suaves y visuales.</span>
+        </button>
+      </section>
+    </section>
+
+    <!-- LIBRARY -->
+    <section class="screen" id="library">
+      <header class="screen-header">
+        <div class="eyebrow">Biblioteca</div>
+        <h2>Plantas medicinales</h2>
+        <p>Contenido visual, limpio y rápido de consultar por categoría.</p>
+      </header>
+
+      <input class="search" type="text" placeholder="Buscar planta o uso..." />
+
+      <div class="chips">
+        <button class="chip active">Digestivo</button>
+        <button class="chip">Sueño</button>
+        <button class="chip">Estrés</button>
+        <button class="chip">Respiratorio</button>
+        <button class="chip">Piel</button>
+      </div>
+
+      <div class="library-list">
+        <article class="library-card card">
+          <div class="library-head">
+            <div class="lib-icon" style="background:#fff1c7;">🌼</div>
+            <div>
+              <h3>Manzanilla</h3>
+              <small>Uso tradicional digestivo y calmante</small>
+            </div>
+          </div>
+          <p>Suele emplearse en infusión para digestiones pesadas, gases y sensación de malestar leve.</p>
+          <div class="mini-tags">
+            <span class="mini-tag">Infusión</span>
+            <span class="mini-tag">Digestivo</span>
+            <span class="mini-tag">Primavera</span>
+          </div>
+        </article>
+
+        <article class="library-card card">
+          <div class="library-head">
+            <div class="lib-icon" style="background:#ddf7e9;">🌿</div>
+            <div>
+              <h3>Menta</h3>
+              <small>Apoyo digestivo y sensación refrescante</small>
+            </div>
+          </div>
+          <p>Se utiliza de forma tradicional en preparaciones suaves para pesadez y digestión lenta.</p>
+          <div class="mini-tags">
+            <span class="mini-tag">Infusión</span>
+            <span class="mini-tag">Digestivo</span>
+            <span class="mini-tag">Verano</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- CAMERA -->
+    <section class="screen" id="camera">
+      <header class="screen-header">
+        <div class="eyebrow">Cámara</div>
+        <h2>Identifica tu planta</h2>
+        <p>Haz una foto o sube una imagen. La demo te muestra la interfaz lista para conectar una API real.</p>
+      </header>
+
+      <section class="camera-card">
+        <div class="camera-preview-wrap">
+          <video id="cameraVideo" autoplay playsinline style="display:none;"></video>
+          <canvas id="captureCanvas" style="display:none;"></canvas>
+          <img id="previewImage" class="preview-image" style="display:none;" alt="Vista previa de planta" />
+          <div id="cameraPlaceholder" class="camera-placeholder">
+            📷 Activa la cámara o sube una imagen para comenzar la identificación.
+          </div>
+        </div>
+
+        <div class="camera-actions">
+          <button class="full-btn btn-main" id="startCameraBtn">Activar cámara</button>
+          <button class="full-btn btn-light" id="captureBtn">Capturar foto</button>
+        </div>
+
+        <div class="camera-actions">
+          <label class="full-btn btn-light upload-label" for="imageUpload">Subir imagen</label>
+          <button class="full-btn btn-dark" id="identifyBtn">Identificar planta</button>
+        </div>
+
+        <input class="file-input" type="file" id="imageUpload" accept="image/*" />
+
+        <div class="scan-status" id="scanStatus">
+          Estado: esperando imagen.
+        </div>
+      </section>
+
+      <section class="result-card" id="resultCard" style="display:none;">
+        <div class="result-header">
+          <div>
+            <div class="eyebrow" style="margin-bottom:6px;">Resultado</div>
+            <div class="result-name" id="plantName">Lavanda</div>
+            <div class="result-scientific" id="plantScientific">Lavandula angustifolia</div>
+          </div>
+          <div class="confidence" id="plantConfidence">92%</div>
+        </div>
+
+        <div class="result-grid">
+          <div class="result-item">
+            <strong>Tipo</strong>
+            <span id="plantType">Aromática / medicinal</span>
+          </div>
+          <div class="result-item">
+            <strong>Cuidados básicos</strong>
+            <span id="plantCare">Necesita buena luz, riego moderado y sustrato con buen drenaje.</span>
+          </div>
+          <div class="result-item">
+            <strong>Uso tradicional</strong>
+            <span id="plantUse">Se aprecia por su aroma y por su uso en ambientes relajantes.</span>
+          </div>
+          <div class="result-item">
+            <strong>Nota</strong>
+            <span id="plantNote">Este resultado es de demostración hasta conectar una API de identificación real.</span>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- LUNAR -->
+    <section class="screen" id="lunar">
+      <header class="screen-header">
+        <div class="eyebrow">Calendario Lunar</div>
+        <h2>Consejos por fase</h2>
+        <p>Una lectura simple y agradable para siembra, poda y riego.</p>
+      </header>
+
+      <section class="moon-card">
+        <div class="moon-top">
+          <div>
+            <h3 id="moonPhase">Fase actual: Luna Creciente</h3>
+            <p id="moonDesc">Etapa asociada al crecimiento, ideal para reforzar cuidados y siembras de hoja.</p>
+          </div>
+          <div class="moon-disc"></div>
+        </div>
+        <div class="tips" id="moonTips"></div>
+      </section>
+
+      <section class="phase-list">
+        <article class="phase-item">
+          <h4>Luna Nueva</h4>
+          <p>Momento interesante para limpieza, preparación del sustrato y organización del cultivo.</p>
+        </article>
+        <article class="phase-item">
+          <h4>Luna Creciente</h4>
+          <p>Favorece el impulso visual del crecimiento y el cuidado de plantas de hoja.</p>
+        </article>
+        <article class="phase-item">
+          <h4>Luna Llena</h4>
+          <p>Etapa de observación, cosecha ligera y seguimiento general del estado de las plantas.</p>
+        </article>
+        <article class="phase-item">
+          <h4>Luna Menguante</h4>
+          <p>Buena fase para poda, mantenimiento, control del crecimiento y trasplantes.</p>
+        </article>
+      </section>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="screen" id="settings">
+      <header class="screen-header">
+        <div class="eyebrow">Ajustes</div>
+        <h2>Tu espacio VerdeVida</h2>
+        <p>Activa recordatorios y conserva el estilo suave de la app.</p>
+      </header>
+
+      <section class="settings-list">
+        <article class="setting-card">
+          <div class="setting-row">
+            <div>
+              <h3>Recordatorios de riego</h3>
+              <p>Recibe avisos para mantener el cuidado de tus plantas al día.</p>
+            </div>
+            <div class="switch active" onclick="this.classList.toggle('active')"></div>
+          </div>
+        </article>
+
+        <article class="setting-card">
+          <div class="setting-row">
+            <div>
+              <h3>Modo relajante</h3>
+              <p>Una experiencia visual aún más tranquila y limpia.</p>
+            </div>
+            <div class="switch" onclick="this.classList.toggle('active')"></div>
+          </div>
+        </article>
+
+        <article class="setting-card">
+          <h3>Paleta de color</h3>
+          <p>La identidad visual se inspira en tonos vegetales suaves y empolvados.</p>
+          <div class="palette">
+            <div class="swatch" style="background:#bfe3d7;"></div>
+            <div class="swatch" style="background:#bfd8f4;"></div>
+            <div class="swatch" style="background:#c9cbe5;"></div>
+            <div class="swatch" style="background:#efbfd0;"></div>
+          </div>
+        </article>
+      </section>
+    </section>
+  </div>
+
+  <nav class="nav">
+    <button class="nav-btn active" data-screen="home">
+      <span class="icon">🏠</span>
+      <span>Inicio</span>
+    </button>
+    <button class="nav-btn" data-screen="library">
+      <span class="icon">📚</span>
+      <span>Biblioteca</span>
+    </button>
+    <button class="nav-btn" data-screen="camera">
+      <span class="icon">📷</span>
+      <span>Cámara</span>
+    </button>
+    <button class="nav-btn" data-screen="lunar">
+      <span class="icon">🌙</span>
+      <span>Lunar</span>
+    </button>
+    <button class="nav-btn" data-screen="settings">
+      <span class="icon">⚙️</span>
+      <span>Ajustes</span>
+    </button>
+  </nav>
+
+  <script>
+    // Navegación
+    const navButtons = document.querySelectorAll(".nav-btn");
+    const screens = document.querySelectorAll(".screen");
+
+    function goToScreen(target) {
+      navButtons.forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.screen === target);
+      });
+
+      screens.forEach(screen => {
+        screen.classList.toggle("active", screen.id === target);
+      });
+    }
+
+    navButtons.forEach(btn => {
+      btn.addEventListener("click", () => goToScreen(btn.dataset.screen));
+    });
+
+    // Calendario lunar demo
+    const moonData = [
+      {
+        phase: "Luna Nueva",
+        desc: "Ideal para preparar tierra, limpiar hojas secas y organizar nuevas siembras.",
+        tips: [
+          "🌱 Siembra: buena para preparación y cultivos de raíz.",
+          "✂️ Poda: recomendable para retirar partes débiles.",
+          "💧 Riego: ligero y controlado."
+        ]
+      },
+      {
+        phase: "Luna Creciente",
+        desc: "Etapa asociada al crecimiento, ideal para reforzar cuidados y siembras de hoja.",
+        tips: [
+          "🌱 Siembra: favorable para plantas que crecen en altura.",
+          "✂️ Poda: mejor evitar podas fuertes.",
+          "💧 Riego: moderado y constante."
+        ]
+      },
+      {
+        phase: "Luna Llena",
+        desc: "Momento de observación y vitalidad, útil para cosecha ligera y revisión general.",
+        tips: [
+          "🌱 Siembra: puede favorecer flor y fruto.",
+          "✂️ Poda: solo mantenimiento suave.",
+          "💧 Riego: evita excesos."
+        ]
+      },
+      {
+        phase: "Luna Menguante",
+        desc: "Muy adecuada para poda, mantenimiento, control del crecimiento y trasplantes.",
+        tips: [
+          "🌱 Siembra: útil para raíces y especies resistentes.",
+          "✂️ Poda: excelente momento de formación.",
+          "💧 Riego: más medido para no encharcar."
+        ]
+      }
+    ];
+
+    const moonPhase = document.getElementById("moonPhase");
+    const moonDesc = document.getElementById("moonDesc");
+    const moonTips = document.getElementById("moonTips");
+
+    function getApproxMoonPhase() {
+      const day = new Date().getDate();
+      if (day <= 7) return moonData[0];
+      if (day <= 14) return moonData[1];
+      if (day <= 21) return moonData[2];
+      return moonData[3];
+    }
+
+    function renderMoonData() {
+      const current = getApproxMoonPhase();
+      moonPhase.textContent = `Fase actual: ${current.phase}`;
+      moonDesc.textContent = current.desc;
+      moonTips.innerHTML = current.tips.map(t => `<div class="tip">${t}</div>`).join("");
+    }
+
+    renderMoonData();
+
+    // Cámara e identificación demo
+    const startCameraBtn = document.getElementById("startCameraBtn");
+    const captureBtn = document.getElementById("captureBtn");
+    const identifyBtn = document.getElementById("identifyBtn");
+    const imageUpload = document.getElementById("imageUpload");
+
+    const cameraVideo = document.getElementById("cameraVideo");
+    const captureCanvas = document.getElementById("captureCanvas");
+    const previewImage = document.getElementById("previewImage");
+    const cameraPlaceholder = document.getElementById("cameraPlaceholder");
+    const scanStatus = document.getElementById("scanStatus");
+    const resultCard = document.getElementById("resultCard");
+
+    const plantName = document.getElementById("plantName");
+    const plantScientific = document.getElementById("plantScientific");
+    const plantConfidence = document.getElementById("plantConfidence");
+    const plantType = document.getElementById("plantType");
+    const plantCare = document.getElementById("plantCare");
+    const plantUse = document.getElementById("plantUse");
+    const plantNote = document.getElementById("plantNote");
+
+    let cameraStream = null;
+    let currentImageData = null;
+
+    async function startCamera() {
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "environment" },
+          audio: false
+        });
+
+        cameraVideo.srcObject = cameraStream;
+        cameraVideo.style.display = "block";
+        previewImage.style.display = "none";
+        captureCanvas.style.display = "none";
+        cameraPlaceholder.style.display = "none";
+        scanStatus.textContent = "Estado: cámara activa. Ya puedes capturar una foto.";
+      } catch (error) {
+        scanStatus.textContent = "Estado: no se pudo acceder a la cámara. Usa la opción de subir imagen.";
+      }
+    }
+
+    function capturePhoto() {
+      if (!cameraVideo.srcObject) {
+        scanStatus.textContent = "Estado: activa la cámara antes de capturar.";
+        return;
+      }
+
+      const width = cameraVideo.videoWidth;
+      const height = cameraVideo.videoHeight;
+
+      if (!width || !height) {
+        scanStatus.textContent = "Estado: la cámara aún no está lista.";
+        return;
+      }
+
+      captureCanvas.width = width;
+      captureCanvas.height = height;
+
+      const ctx = captureCanvas.getContext("2d");
+      ctx.drawImage(cameraVideo, 0, 0, width, height);
+
+      currentImageData = captureCanvas.toDataURL("image/jpeg", 0.9);
+
+      previewImage.src = currentImageData;
+      previewImage.style.display = "block";
+      captureCanvas.style.display = "none";
+      cameraVideo.style.display = "none";
+      cameraPlaceholder.style.display = "none";
+
+      scanStatus.textContent = "Estado: foto capturada. Pulsa en identificar planta.";
+    }
+
+    imageUpload.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        currentImageData = e.target.result;
+        previewImage.src = currentImageData;
+        previewImage.style.display = "block";
+        cameraVideo.style.display = "none";
+        captureCanvas.style.display = "none";
+        cameraPlaceholder.style.display = "none";
+        scanStatus.textContent = "Estado: imagen cargada. Pulsa en identificar planta.";
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function fakeIdentifyPlant() {
+      if (!currentImageData) {
+        scanStatus.textContent = "Estado: primero captura o sube una imagen.";
+        return;
+      }
+
+      scanStatus.textContent = "Estado: analizando imagen...";
+      resultCard.style.display = "none";
+
+      setTimeout(() => {
+        const demoResults = [
+          {
+            name: "Lavanda",
+            scientific: "Lavandula angustifolia",
+            confidence: "92%",
+            type: "Aromática / medicinal",
+            care: "Necesita buena luz, riego moderado y sustrato con buen drenaje.",
+            use: "Se aprecia por su aroma y por su uso en ambientes relajantes.",
+            note: "Resultado de demostración. Para reconocimiento real necesitas una API de identificación."
+          },
+          {
+            name: "Aloe Vera",
+            scientific: "Aloe barbadensis miller",
+            confidence: "89%",
+            type: "Suculenta / ornamental",
+            care: "Prefiere luz abundante, poco riego y evitar el exceso de humedad.",
+            use: "Conocida tradicionalmente por su gel y su uso cosmético.",
+            note: "Resultado de demostración. Para reconocimiento real necesitas una API de identificación."
+          },
+          {
+            name: "Romero",
+            scientific: "Salvia rosmarinus",
+            confidence: "87%",
+            type: "Aromática / culinaria",
+            care: "Necesita sol, riego moderado y sustrato ligero.",
+            use: "Muy utilizado por su aroma y en usos tradicionales domésticos.",
+            note: "Resultado de demostración. Para reconocimiento real necesitas una API de identificación."
+          }
+        ];
+
+        const selected = demoResults[Math.floor(Math.random() * demoResults.length)];
+
+        plantName.textContent = selected.name;
+        plantScientific.textContent = selected.scientific;
+        plantConfidence.textContent = selected.confidence;
+        plantType.textContent = selected.type;
+        plantCare.textContent = selected.care;
+        plantUse.textContent = selected.use;
+        plantNote.textContent = selected.note;
+
+        resultCard.style.display = "block";
+        scanStatus.textContent = "Estado: identificación completada.";
+      }, 1300);
+    }
+
+    startCameraBtn.addEventListener("click", startCamera);
+    captureBtn.addEventListener("click", capturePhoto);
+    identifyBtn.addEventListener("click", fakeIdentifyPlant);
+
+    // Opcional: detener cámara al salir
+    function stopCameraIfNeeded(targetScreen) {
+      if (targetScreen !== "camera" && cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+        cameraVideo.srcObject = null;
+      }
+    }
+
+    navButtons.forEach(btn => {
+      btn.addEventListener("click", () => stopCameraIfNeeded(btn.dataset.screen));
+    });
+
+    // Ejemplo de conexión real con API externa
+    // Necesita backend para proteger la API key.
+    /*
+    async function identifyPlantReal(base64Image) {
+      const response = await fetch("/api/identify-plant", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: base64Image })
+      });
+
+      const data = await response.json();
+
+      // Aquí mapearías la respuesta real de la API
+      plantName.textContent = data.commonName;
+      plantScientific.textContent = data.scientificName;
+      plantConfidence.textContent = `${Math.round(data.confidence * 100)}%`;
+      plantType.textContent = data.type;
+      plantCare.textContent = data.care;
+      plantUse.textContent = data.use;
+      plantNote.textContent = "Resultado obtenido mediante API real.";
+      resultCard.style.display = "block";
+    }
+    */
+  </script>
+</body>
+</html>
